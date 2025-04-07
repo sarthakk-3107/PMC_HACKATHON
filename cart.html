@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Cart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .cart-item {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+    }
+    .total {
+      text-align: right;
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    a {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #0073e6;
+      text-decoration: none;
+    }
+    .empty {
+      text-align: center;
+      color: #666;
+    }
+
+    /* Chatbot UI */
+    .chatbot {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 300px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      padding: 15px;
+      display: none;
+      z-index: 1000;
+    }
+    .bot-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .bot-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .bot-message {
+      background-color: #f1f1f1;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html">&larr; Back to Shop</a>
+  <h1>Your Shopping Cart</h1>
+
+  <div id="cart-items"></div>
+  <div class="total" id="total"></div>
+
+  <!-- Chatbot UI -->
+  <div class="chatbot" id="chatbot">
+    <div class="bot-header">
+      <img src="bot-avatar.jpg" alt="Bot Avatar" class="bot-avatar">
+      Assistant
+    </div>
+    <div class="bot-message">
+      Still thinking it over? Here’s 10% off if you checkout in the next 5 minutes! 💸
+    </div>
+  </div>
+
+  <script>
+    const cartContainer = document.getElementById("cart-items");
+    const totalDisplay = document.getElementById("total");
+    const chatbot = document.getElementById("chatbot");
+
+    const cart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    let total = 0;
+    let originalTotal = 0;
+
+    if (cart.length === 0) {
+      cartContainer.innerHTML = '<p class="empty">Your cart is empty.</p>';
+    } else {
+      cart.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `<span>${item.title}</span><span>$${item.price}</span>`;
+        cartContainer.appendChild(div);
+        total += parseFloat(item.price);
+      });
+
+      originalTotal = total;
+      totalDisplay.textContent = `Total: $${total.toFixed(2)}`;
+    }
+
+    // 💬 Show chatbot after 30 seconds and apply 10% discount
+    setTimeout(() => {
+      if (cart.length > 0) {
+        const discount = originalTotal * 0.10;
+        const discountedTotal = originalTotal - discount;
+
+        // Show chatbot
+        chatbot.style.display = "block";
+
+        // Update total with discount
+        totalDisplay.textContent = `Total after discount: $${discountedTotal.toFixed(2)}`;
+      }
+    }, 30000); // 30 seconds
+  </script>
+
+</body>
+</html>
